@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客服聊天页面</title>
+    <style>
+        .w1200{width:1200px; margin: 0 auto;}
+        .title{text-align: center; font-size: 20px;}
+        .chat_log{min-height: 300px;font-size: 18px;}
+        .input-box{width: 800px; margin: 0; margin-top: 50px; min-height:100px; }
+    </style>
+    <script src="./js/jquery-1.9.1.min.js"></script>
+</head>
+
+<body class="w1200">
+<p class="title">屌丝聊天窗口</p>
+<textarea name="chat_log" class="w1200 chat_log">
+
+</textarea>
+
+<iframe src="" width="0" height="0" frameborder="0"></iframe>
+<textarea class="input-box" name="content"></textarea>
+<button onclick="sendMsg();">发送</button>
+
+</body>
+<script>
+    $(function () {
+        var setting = {
+            "url" : 'user.php?act=getMsg',
+            "dataType":"JSON",
+            "success":function(res){
+                $("textarea[name=chat_log]").append('客服美眉对你说：'+res.content+"\r\n");
+                // setInterval('$.ajax(setting)', 5000); //这个写法会报错，可能是setInterval用法不对
+                $.ajax(setting);
+            }
+        };
+        $.ajax(setting);
+    });
+
+    function sendMsg() {
+        var content = $("textarea[name=content]").val().trim();
+        if (content == '') {
+            return;
+        }
+        $.post("./user.php?act=sendMsg",{"content":content}, function(res){
+            if (res.err == 0) {
+                $("textarea[name=chat_log]").append('你对客服说：'+content+"\r\n");
+                $("textarea[name=content]").val('');
+            }
+        },'JSON');
+    }
+</script>
+</html>
